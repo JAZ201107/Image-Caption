@@ -1,0 +1,14 @@
+{
+  "num_epochs": 200,
+  "learning_rate": 0.0001,
+  "batch_size": 64,
+
+  "encoded_image_size": 14,
+  "encoder_dim": 2048,
+  "decoder_dim": 512,
+  "attention_dim": 512,
+  "embed_dim": 512
+  "vocab_size": 
+  "p_dropout": 0.5,
+  "alpha_c" : 1.
+}
