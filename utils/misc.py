@@ -3,6 +3,7 @@ import os
 import shutil
 import random
 import matplotlib.pyplot as plt
+from PIL import Image
 
 import torch
 import numpy as np
@@ -124,3 +125,41 @@ def save_learning_curve(train_summ, model_dir):
         plt.ylabel(f"{metric.capitalize()}")
         plt.legend(loc="best")
         plt.savefig(os.path.join(model_dir, f"{metric}_learning_curve.png"))
+
+
+def visualize_att(image_path, seq, alphas, rev_word_map, smooth=True):
+    image = Image.open(image_path)
+    image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
+
+    words = [rev_word_map[ind] for ind in seq]
+
+    for t in range(len(words)):
+        if t > 50:
+            break
+
+        plt.subplot(np.ceil(len(words) / 5.0), 5, t + 1)
+
+        plt.text(
+            0,
+            1,
+            "%s" % (words[t]),
+            color="black",
+            backgroundcolor="white",
+            fontsize=12,
+        )
+        plt.imshow(image)
+
+        current_alpha = alphas[t, :]
+        if smooth:
+            alpha = skimage.transform.pyramid_expand(
+                current_alpha.numpy(), upscale=24, sigma=8
+            )
+        else:
+            alpha = skimage.transform.resize(current_alpha.numpy(), [14 * 24, 14 * 24])
+        if t == 0:
+            plt.imshow(alpha, alpha=0)
+        else:
+            plt.imshow(alpha, alpha=0.8)
+        plt.set_cmap(cm.Greys_r)
+        plt.axis("off")
+    plt.show()
